@@ -21,7 +21,7 @@ const QRCodeGenerator = () => {
         ...(height && { height })
       };
 
-      const response = await axios.get('http://localhost:8080/qr', {
+      const response = await axios.get('https://qr-generator-yrv0.onrender.com/qr', {
         params,
         responseType: 'blob'
       });
