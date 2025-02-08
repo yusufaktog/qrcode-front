@@ -57,8 +57,8 @@ const QRCodeGenerator = () => {
             type="number"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
-            min="100"
-            max="1000"
+            min="64"
+            max="640"
           />
         </div>
 
@@ -68,8 +68,8 @@ const QRCodeGenerator = () => {
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            min="100"
-            max="1000"
+            min="64"
+            max="640"
           />
         </div>
 
@@ -77,6 +77,7 @@ const QRCodeGenerator = () => {
           {loading ? 'Generating...' : 'Generate QR Code'}
         </button>
       </form>
+      {}
 
       {error && <p className="error">{error}</p>}
 

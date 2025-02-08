@@ -36,6 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
 .qr-generator {
   max-width: 600px;
   margin: 2rem auto;
@@ -82,7 +83,7 @@ button:disabled {
   display: block;
   margin: 1rem auto;
   border: 1px solid #ddd;
-  padding: 5px;
+  padding: 1%;
 }
 
 .error {
