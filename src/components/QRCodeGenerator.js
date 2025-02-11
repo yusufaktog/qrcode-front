@@ -26,8 +26,6 @@ const QRCodeGenerator = () => {
         responseType: 'blob'
       });
 
-      console.log(process.env);
-      
       const imageUrl = URL.createObjectURL(response.data);
       setQrImage(imageUrl);
     } catch (err) {
