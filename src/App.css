@@ -83,7 +83,7 @@ button:disabled {
   display: block;
   margin: 1rem auto;
   border: 1px solid #ddd;
-  padding: 1%;
+  padding: 5px;
 }
 
 .error {
