@@ -36,6 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
 .qr-generator {
   max-width: 600px;
   margin: 2rem auto;

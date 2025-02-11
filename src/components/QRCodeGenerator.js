@@ -21,11 +21,13 @@ const QRCodeGenerator = () => {
         ...(height && { height })
       };
 
-      const response = await axios.get('http://localhost:8080/qr', {
+      const response = await axios.get(process.env.REACT_APP_API_URL, {
         params,
         responseType: 'blob'
       });
 
+      console.log(process.env);
+      
       const imageUrl = URL.createObjectURL(response.data);
       setQrImage(imageUrl);
     } catch (err) {
@@ -57,8 +59,8 @@ const QRCodeGenerator = () => {
             type="number"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
-            min="100"
-            max="1000"
+            min="64"
+            max="640"
           />
         </div>
 
@@ -68,8 +70,8 @@ const QRCodeGenerator = () => {
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            min="100"
-            max="1000"
+            min="64"
+            max="640"
           />
         </div>
 
@@ -77,6 +79,7 @@ const QRCodeGenerator = () => {
           {loading ? 'Generating...' : 'Generate QR Code'}
         </button>
       </form>
+      {}
 
       {error && <p className="error">{error}</p>}
 
