@@ -21,11 +21,13 @@ const QRCodeGenerator = () => {
         ...(height && { height })
       };
 
-      const response = await axios.get('https://qr-generator-yrv0.onrender.com/qr', {
+      const response = await axios.get(process.env.REACT_APP_API_URL, {
         params,
         responseType: 'blob'
       });
 
+      console.log(process.env);
+      
       const imageUrl = URL.createObjectURL(response.data);
       setQrImage(imageUrl);
     } catch (err) {
