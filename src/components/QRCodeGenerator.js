@@ -1,24 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState('');
-  const [width, setWidth] = useState(200);
-  const [height, setHeight] = useState(200);
+  const [size, setSize] = useState(200);
   const [qrImage, setQrImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    // Store the original title
+    const originalTitle = document.title;
+    
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        document.title = "📱Your QR missed you already";
+      } else {
+        document.title = originalTitle;
+      }
+    };
+
+    // Add event listener
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.title = originalTitle;
+    };
+  }, []);
 
   const generateQRCode = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const params = {
         text,
-        ...(width && { width }),
-        ...(height && { height })
+        width: size,
+        height: size
       };
 
       const response = await axios.get(process.env.REACT_APP_API_URL, {
@@ -27,6 +48,11 @@ const QRCodeGenerator = () => {
       });
 
       const imageUrl = URL.createObjectURL(response.data);
+
+      // Add random delay between 0-300ms
+      const randomDelay = Math.floor(100 + Math.random() * 201);
+      await new Promise(resolve => setTimeout(resolve, randomDelay));
+
       setQrImage(imageUrl);
     } catch (err) {
       setError('Error generating QR code. Please try again.');
@@ -52,44 +78,50 @@ const QRCodeGenerator = () => {
         </div>
 
         <div className="form-group">
-          <label>Width (px):</label>
+          <label>Size (px):</label>
           <input
             type="number"
-            value={width}
-            onChange={(e) => setWidth(e.target.value)}
-            min="64"
-            max="640"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+            min="36"
+            max="400"
+            placeholder="Default: 200px"
           />
         </div>
 
-        <div className="form-group">
-          <label>Height (px):</label>
-          <input
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            min="64"
-            max="640"
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex items-center gap-1 justify-center px-4 py-2 text-sm"
+        >
           {loading ? 'Generating...' : 'Generate QR Code'}
         </button>
       </form>
-      {}
 
       {error && <p className="error">{error}</p>}
 
-      {qrImage && (
-        <div className="qr-result">
-          <h2>Generated QR Code:</h2>
-          <img src={qrImage} alt="Generated QR Code" />
-          <a href={qrImage} download="qrcode.png">
-            Download PNG
-          </a>
-        </div>
-      )}
+      <div className="qr-result">
+        <h2>Generated QR Code:</h2>
+        {loading ? (
+          <img
+            src="/qr-code.gif"
+            className="w-[200px] h-[200px] bg-white rounded-lg"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              backgroundColor: 'white',
+            }}
+            alt="Loading..."
+          />
+        ) : qrImage && (
+          <>
+            <img src={qrImage} alt="Generated QR Code" />
+            <a href={qrImage} download="qrcode.png">
+              Download PNG
+            </a>
+          </>
+        )}
+      </div>
     </div>
   );
 };
