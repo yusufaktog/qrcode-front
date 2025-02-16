@@ -10,7 +10,6 @@ const QRCodeGenerator = () => {
   const [isWakingUp, setIsWakingUp] = useState(false);
 
   useEffect(() => {
-    // Store the original title
     const originalTitle = document.title;
 
     const handleVisibilityChange = () => {
@@ -21,10 +20,8 @@ const QRCodeGenerator = () => {
       }
     };
 
-    // Add event listener
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Cleanup
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.title = originalTitle;
