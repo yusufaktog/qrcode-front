@@ -7,11 +7,11 @@ const QRCodeGenerator = () => {
   const [qrImage, setQrImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isWakingUp, setIsWakingUp] = useState(false);
 
   useEffect(() => {
-    // Store the original title
     const originalTitle = document.title;
-    
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
         document.title = "📱Your QR missed you already";
@@ -20,10 +20,8 @@ const QRCodeGenerator = () => {
       }
     };
 
-    // Add event listener
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Cleanup
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.title = originalTitle;
@@ -34,6 +32,12 @@ const QRCodeGenerator = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    let wakingUpTimeout;
+
+    wakingUpTimeout = setTimeout(() => {
+      setIsWakingUp(true);
+    }, 1000);
 
     try {
       const params = {
@@ -49,7 +53,7 @@ const QRCodeGenerator = () => {
 
       const imageUrl = URL.createObjectURL(response.data);
 
-      // Add random delay between 0-300ms
+      // Regular random delay for animation
       const randomDelay = Math.floor(100 + Math.random() * 201);
       await new Promise(resolve => setTimeout(resolve, randomDelay));
 
@@ -58,7 +62,9 @@ const QRCodeGenerator = () => {
       setError('Error generating QR code. Please try again.');
       console.error(err);
     } finally {
+      clearTimeout(wakingUpTimeout);
       setLoading(false);
+      setIsWakingUp(false);
     }
   };
 
@@ -97,6 +103,16 @@ const QRCodeGenerator = () => {
           {loading ? 'Generating...' : 'Generate QR Code'}
         </button>
       </form>
+
+      {isWakingUp && (
+        <div className="wake-up-message bg-blue-50 text-blue-600 p-4 rounded-lg mt-4 animate-pulse">
+          <p className="flex items-center gap-2">
+            <span role="img" aria-label="coffee">☕</span>
+            Waking up the backend service... Thank you for your patience!
+          </p>
+          (May take about 2 min)
+        </div>
+      )}
 
       {error && <p className="error">{error}</p>}
 
